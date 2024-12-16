@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: pipeline-with-task
+spec:
+  params:
+  - description: url of the git repository
+    name: git-url
+    type: string
+  - default: main
+    description: revision (or branch) within repository to be used
+    name: git-revision
+    type: string
+  - default: .
+    description: context (path) within the git working tree (see git-url & git-revision)
+      where the sources for this build are located
+    name: git-context
+    type: string
+  - description: ImageStream where to push the newly built image
+    name: imagestream
+    type: string
+  - description: Namespace where destination ImageStream is located. (Usually the same 
+      namespace where this pipeline is located.)
+    name: namespace
+    type: string
+  - default: Dockerfile
+    description: name (and path) of Dockerfile to be used. (optional, default ./Dockerfile)
+    name: dockerfile
+    type: string
+  tasks:
+  - name: fetch-repository
+    params:
+    - name: URL
+      value: $(params.git-url)
+    - name: REVISION
+      value: $(params.git-revision)
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: git-clone
+      - name: namespace
+        value: openshift-pipelines
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+  - name: build-image
+    params:
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/$(params.namespace)/$(params.imagestream):latest
+    - name: DOCKERFILE
+      value: $(params.dockerfile)
+    - name: CONTEXT
+      value: $(params.git-context)
+    runAfter:
+    - fetch-repository
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: buildah
+      - name: namespace
+        value: openshift-pipelines
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+  workspaces:
+  - name: shared-workspace

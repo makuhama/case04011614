@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: pipeline-with-clustertask-
+spec:
+  params:
+  - name: dockerfile
+    value: Dockerfile
+  - name: git-revision
+    value: main
+  - name: git-url
+    value: https://github.com/makuhama/case04011614.git
+  - name: git-context
+    value: pipeline-with-clustertask
+  - name: imagestream
+    value: target
+  - name: namespace
+    value: somenamespace   # adapt me
+  pipelineRef:
+    name: pipeline-with-clustertask
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: source-pvc
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
