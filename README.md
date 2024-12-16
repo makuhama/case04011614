@@ -1,8 +1,7 @@
 Resources and Dockerfiles for reproducing Red Hat case #04011614. It basically
 contains two nearly identical Pipelines that only differ in task *buildah*.
 
-**pipeline-with-clustertask** references ClusterTask *buildah* from namespace
-*openshift-pipeline*.
+**pipeline-with-clustertask** references ClusterTask *buildah*.
 
 **pipeline-with-task** references Task *buildah* from namespace
 *openshift-pipeline* by means of a cluster resolver.
