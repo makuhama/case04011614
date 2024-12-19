@@ -32,35 +32,35 @@ ClusterTask *buildah*.
 
 ```
 oc apply -f target-imagestream.yaml
-oc apply -f pipeline_with_clustertask/pipeline_with_clustertask_pipeline.yaml
-oc apply -f pipeline_with_task/pipeline_with_task_pipeline.yaml
+oc apply -f pipeline-with-clustertask/pipeline-with-clustertask-pipeline.yaml
+oc apply -f pipeline-with-task/pipeline-with-task-pipeline.yaml
 ```
 
 * Adapt the two YAML files:
 
 ```
-pipeline_with_clustertask/pipelinerun_with_clustertask_pipelinerun.yaml
-pipeline_with_task/pipelinerun_with_task_pipelinerun.yaml
+pipeline-with-clustertask/pipelinerun-with-clustertask-pipelinerun.yaml
+pipeline-with-task/pipelinerun-with-task-pipelinerun.yaml
 ```
 
 by changing the namespace in line 18.
 
 ## Good case
 
-Run Pipeline *pipeline_with_clustertask* with
+Run Pipeline *pipeline-with-clustertask* with
 
 ```
-oc create -f pipeline_with_clustertask/pipelinerun_with_clustertask_pipelinerun.yaml
+oc create -f pipeline-with-clustertask/pipelinerun-with-clustertask-pipelinerun.yaml
 ```
 
 This PipelineRun succeeds
 
 ## Bad case
 
-Run Pipeline *pipeline_with_task* with
+Run Pipeline *pipeline-with-task* with
 
 ```
-oc create -f pipeline_with_task/pipelinerun_with_task_pipelinerun.yaml
+oc create -f pipeline-with-task/pipelinerun-with-task-pipelinerun.yaml
 ```
 
 This PipelineRun fails.
